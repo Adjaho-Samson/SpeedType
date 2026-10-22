@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101916">
+  <meta name="description" content="Entraînez votre vitesse de frappe avec SpeedType, même hors ligne.">
+  <meta name="application-name" content="SpeedType">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="SpeedType">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="color-scheme" content="dark">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="./styles.css">
+  <title>SpeedType — Le rythme est à vous</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="SpeedType, accueil">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 24.5 17 14l6.2 6.2L33 10" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M25.5 10H33v7.5" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 31h24" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity=".55"/></svg></span>
+        <span class="brand-name">Speed<span>Type</span></span>
+      </a>
+      <div class="header-actions">
+        <span class="connection-pill" id="connectionStatus"><span class="status-dot"></span><span id="connectionLabel">En ligne</span></span>
+        <button class="button button-install" id="installButton" type="button" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m0 0 4-4m-4 4L6 8M3 14v3h14v-3"/></svg> Installer SpeedType</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="pageTitle">
+        <div class="eyebrow"><span class="eyebrow-line"></span> LE PETIT LABORATOIRE DE LA FRAPPE</div>
+        <h1 id="pageTitle">Trouvez votre <em>rythme.</em></h1>
+        <p class="intro-copy">Un test, quelques secondes, et votre clavier n’aura plus de secrets.</p>
+      </section>
+
+      <section class="update-banner" id="updateBanner" hidden aria-live="polite">
+        <span class="update-symbol" aria-hidden="true">↻</span>
+        <div><strong>Une mise à jour de SpeedType est prête.</strong><span>Vos records et réglages sont conservés.</span></div>
+        <button id="updateButton" class="button button-update" type="button">Mettre à jour</button>
+        <button id="dismissUpdate" class="icon-button" type="button" aria-label="Plus tard">×</button>
+      </section>
+
+      <section class="game-layout" aria-label="Test de vitesse de frappe">
+        <div class="game-card">
+          <div class="card-topline">
+            <div class="section-label"><span class="label-dot"></span> TEST DE FRAPPE</div>
+            <div class="run-state" id="runState"><span class="run-dot"></span><span id="runStateText">PRÊT À JOUER</span></div>
+          </div>
+
+          <div class="metrics" aria-label="Statistiques en direct">
+            <div class="metric metric-primary"><span class="metric-label">MOTS / MIN</span><strong id="wpmValue">0</strong><span class="metric-unit">WPM</span></div>
+            <div class="metric"><span class="metric-label">PRÉCISION</span><strong id="accuracyValue">100<span class="metric-small">%</span></strong></div>
+            <div class="metric"><span class="metric-label">TEMPS</span><strong id="timeValue">30<span class="metric-small">s</span></strong></div>
+            <div class="metric"><span class="metric-label">RECORD · <span id="recordDurationLabel">30</span>S</span><strong id="recordValue">—</strong></div>
+          </div>
+
+          <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+
+          <div class="text-label-row"><label for="typingInput" class="section-label">VOTRE TEXTE</label><span class="hint">Cliquez dans la zone puis tapez le texte affiché</span></div>
+          <div class="passage-box" id="passageBox" tabindex="0" role="button" aria-label="Texte à recopier. Cliquez pour commencer le test.">
+            <p id="passageText" class="passage-text"></p>
+            <span class="passage-caret" aria-hidden="true"></span>
+          </div>
+          <label for="typingInput" class="visually-hidden">Saisissez le texte affiché ci-dessus</label>
+          <textarea id="typingInput" class="typing-input" rows="2" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Votre frappe apparaîtra ici…" aria-describedby="typingHelp"></textarea>
+          <span id="typingHelp" class="visually-hidden">Le chronomètre commence dès votre première lettre. Le collage est désactivé pour garder le test équitable.</span>
+
+          <div class="game-controls">
+            <div class="duration-control" role="group" aria-label="Durée du test">
+              <span class="control-caption">DURÉE</span>
+              <button class="duration-button" data-duration="15" type="button" aria-pressed="false">15s</button>
+              <button class="duration-button is-selected" data-duration="30" type="button" aria-pressed="true">30s</button>
+              <button class="duration-button" data-duration="60" type="button" aria-pressed="false">60s</button>
+              <button class="duration-button" data-duration="120" type="button" aria-pressed="false">120s</button>
+            </div>
+            <button id="restartButton" class="button button-primary" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 7A7 7 0 1 0 17 11M16.5 3v4h-4"/></svg><span>Nouveau test</span></button>
+          </div>
+          <p class="keyboard-note"><span class="keycap">↵</span> Pas de pression : le test démarre à votre première frappe.</p>
+        </div>
+
+        <aside class="side-column">
+          <section class="side-card record-card" aria-labelledby="recordHeading">
+            <div class="side-icon trophy-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 21h8m-4-4v4m-5-18h10v5a5 5 0 0 1-10 0V3Zm10 2h4v2a4 4 0 0 1-4 4M7 5H3v2a4 4 0 0 0 4 4"/></svg></div>
+            <div class="side-card-heading"><h2 id="recordHeading">Votre meilleur score</h2><span id="recordSubheading">Sur 30 secondes</span></div>
+            <div class="best-score"><strong id="bestWpm">—</strong><span>WPM</span></div>
+            <div class="record-detail"><span>Précision du record</span><strong id="bestAccuracy">—</strong></div>
+            <div class="record-detail"><span>Tests terminés</span><strong id="testsCount">0</strong></div>
+            <p class="local-note"><span class="lock-icon" aria-hidden="true">▣</span> Vos données restent sur cet appareil.</p>
+          </section>
+
+          <section class="side-card install-card" id="installHelpCard" aria-labelledby="installHeading">
+            <div class="install-card-top"><div class="side-icon install-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 7h6m-6 4h6m-6 4h3"/></svg></div><span class="offline-tag"><span></span> HORS LIGNE</span></div>
+            <h2 id="installHeading">À portée de clavier.</h2>
+            <p>Installez SpeedType sur votre appareil pour y revenir en un geste, même sans réseau.</p>
+            <div id="iosHelp" class="install-instructions" hidden>
+              <strong>Sur iPhone ou iPad · Safari</strong>
+              <ol><li>Ouvrez ce site dans Safari.</li><li>Appuyez sur le bouton de partage <span aria-label="partager">□↑</span>.</li><li>Choisissez <b>Sur l’écran d’accueil</b>.</li><li>Confirmez avec <b>Ajouter</b>.</li></ol>
+            </div>
+            <div id="desktopHelp" class="install-instructions" hidden>
+              <strong>Installation depuis le navigateur</strong>
+              <p>Chrome ou Edge : ouvrez le menu <b>⋮</b>, puis choisissez <b>Installer SpeedType</b> ou <b>Installer cette application</b>. Sur Safari macOS : <b>Fichier → Ajouter au Dock</b>.</p>
+            </div>
+            <div id="androidHelp" class="install-instructions" hidden>
+              <strong>Installation sur Android</strong>
+              <p>Dans Chrome, ouvrez le menu <b>⋮</b> et choisissez <b>Installer l’application</b> ou <b>Ajouter à l’écran d’accueil</b>.</p>
+            </div>
+            <p id="installStatus" class="install-status" aria-live="polite">Le jeu et vos records fonctionnent aussi hors connexion.</p>
+          </section>
+        </aside>
+      </section>
+
+      <section class="result-panel" id="resultPanel" hidden aria-live="polite">
+        <div class="result-mark" aria-hidden="true">✓</div><div class="result-copy"><span class="eyebrow">TEST TERMINÉ</span><h2 id="resultTitle">Bien joué !</h2><p id="resultSummary"></p></div><div class="result-stats"><div><span>WPM</span><strong id="resultWpm">0</strong></div><div><span>PRÉCISION</span><strong id="resultAccuracy">100%</strong></div><div><span>ERREURS</span><strong id="resultErrors">0</strong></div></div>
+      </section>
+
+      <footer class="footer"><span>SpeedType <span class="footer-dot">·</span> Votre clavier, votre tempo.</span><span id="pwaStatus">Prêt à jouer</span></footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
